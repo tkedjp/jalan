@@ -18,3 +18,5 @@ csvを使うほうは[csv](https://github.com/tkedjp/jalan/tree/main/csv)に，�
 **[スプレッドシート(mac)](https://github.com/tkedjp/jalan/blob/main/sps/jalan_gui_sps_mac.zip?raw=true)**
 
 <img width="379" alt="スクリーンショット 2023-02-07 18 35 41" src="https://user-images.githubusercontent.com/120151701/217207550-f19eadcc-ef98-4db4-ae4b-b6f7574b74d8.png">
+
+**[スプレッドシート(win)](https://github.com/tkedjp/jalan/blob/main/sps/jalan_gui_sps_win.zip?raw=true)**

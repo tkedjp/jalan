@@ -2,6 +2,8 @@
 じゃらんのサイトのスクレイピングコードです。
 スクレイピングした情報をCSVかスプレッドシートとwordに保存する仕様です。
 
+csvに出力するほうはcsv(https://github.com/tkedjp/jalan/tree/main/csv)というディレクトリに入っています。
+
 それぞれMacとWindowsのGUIアプリも作りました。
 CSVとwordファイルは実行ファイルと同じディレクトリに保存されます。
 

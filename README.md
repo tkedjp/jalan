@@ -1,7 +1,7 @@
 # jalan
 じゃらんのサイトのスクレイピングコードです。
 
-まずホテル名や住所，室料などの情報を取得します。その情報をCSVかGoogleスプレッドシートに出力した後，さらにホテルごとにwordファイルへ出力する仕様です。それぞれMacとWindowsのGUIアプリも作りました。CSVとwordファイルは実行ファイルと同じディレクトリに保存されます。
+まず，条件に基づきホテル名や住所，室料などの情報を取得します。その情報をCSVかGoogleスプレッドシートに出力した後，さらにホテルごとにwordファイルへ出力する仕様です。それぞれMacとWindowsのGUIアプリも作りました。CSVとwordファイルは実行ファイルと同じディレクトリに保存されます。
 
 csvを使うほうは[csv](https://github.com/tkedjp/jalan/tree/main/csv)に，スプレッドシートを使うほうは[sps](https://github.com/tkedjp/jalan/tree/main/sps)に入っています。
 

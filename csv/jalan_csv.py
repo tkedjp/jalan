@@ -143,7 +143,6 @@ for i in range(max_page_index):
             })
             print(hotel_list[-1])
 
-
 #csv出力
 df = pd.DataFrame(hotel_list)
 df.to_csv('list.csv', index=False, encoding='utf-8-sig')

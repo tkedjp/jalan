@@ -18,7 +18,6 @@ room_count = input('室数を入力してください：')
 adult_num = input('人数を入力してください：')
 
 base_url = 'https://www.jalan.net/040000/LRG_040200/SML_040202/?screenId=UWW1402&distCd=01&listId=0&activeSort=0&mvTabFlg=1&stayYear=2023&stayMonth=' + month + '&stayDay=' + day + '&stayCount=' + stay_count + '&roomCount=' + room_count +'&adultNum=' + adult_num +'&yadHb=1&roomCrack=200000&kenCd=040000&lrgCd=040200&smlCd=040202&vosFlg=6&idx={}'
-
 user_agent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36'
 header = {
     'User-Agent': user_agent
@@ -33,14 +32,18 @@ if r.status_code >= 400:
 soup = BeautifulSoup(r.content, 'lxml')
 
 #詳細ページ数と一覧ページ数取得
-number = soup.select_one('td.jlnpc-planListCnt-header > span.s16_F60b').text
-max_page_index = int(number) // 59.5 + 1
+number = soup.select_one('span.jlnpc-listInformation--count').text
+print(number)
+
+# number = soup.select_one('td.jlnpc-planListCnt-header > span.s16_F60b').text
+max_page_index = int(number) // 30 + 1
+print(max_page_index)
 max_page_index = math.floor(max_page_index)
-# print(max_page_index)
+print(max_page_index)
 
 for i in range(max_page_index):
     url = base_url.format(30*i)
-    # print(f'{i+1}ページ目URL：{url}')
+    print(f'{i+1}ページ目URL：{url}')
 
     sleep(3)
 
@@ -48,19 +51,35 @@ for i in range(max_page_index):
     if page_r.status_code >= 400:
         print(F'{url}は無効です')
         continue
+    # print(page_r)
 
     page_soup = BeautifulSoup(page_r.content, 'lxml')
+    # print(page_soup)
 
-    #最安料金と1人あたりの料金
+#     #最安料金と1人あたりの料金
     table_soup = page_soup.select('div.p-yadoCassette__body.p-searchResultItem__body')
+    # print(table_soup)
     for table in table_soup:
         hotel = table.select_one('a > div > div > div.p-searchResultItem__summaryInner > div.p-searchResultItem__summaryLeft > h2').text
+        print(hotel)
         room_price = table.select_one('a > div > div > div.p-searchResultItem__summaryInner > div.p-searchResultItem__summaryRight > dl > dd > span.p-searchResultItem__lowestPriceValue').text
-        per_price = table.select_one('a > div > div > div.p-searchResultItem__summaryInner > div.p-searchResultItem__summaryRight > dl > dd > span.p-searchResultItem__lowestUnitPrice').text
+        print(room_price)
+        # per_price = table.select_one('a > div > div > div.p-searchResultItem__summaryInner > div.p-searchResultItem__summaryRight > dl > dd > span.p-searchResultItem__lowestUnitPrice').text
+        per_price_tag = table.select_one('a > div > div > div.p-searchResultItem__summaryInner > div.p-searchResultItem__summaryRight > dl > dd > span.p-searchResultItem__lowestUnitPrice')
+        if per_price_tag is None:
+            per_price = None
+
+        else:
+            per_price = per_price_tag.text
+
+        print(per_price)
+
         page_urls = table.select('a.jlnpc-yadoCassette__link')
+        # print(page_urls)
 
         for i, page_url in enumerate(page_urls):
             page_url = 'https://www.jalan.net' + page_url.get('href')
+        # print(page_url)
 
             sleep(3)
 

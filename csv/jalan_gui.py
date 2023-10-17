@@ -71,8 +71,9 @@ def save():
 
     soup = BeautifulSoup(r.content, 'lxml')
 
-    total_number = soup.select_one('td.jlnpc-planListCnt-header > span.s16_F60b').text
-    max_page_index = int(total_number) // 59.5 + 1
+    total_number = soup.select_one('span.jlnpc-listInformation--count').text
+    # total_number = soup.select_one('td.jlnpc-planListCnt-header > span.s16_F60b').text
+    max_page_index = int(total_number) // 30 + 1
     max_page_index = math.floor(max_page_index)
 
     for i in range(max_page_index):
@@ -92,7 +93,14 @@ def save():
         for table in table_soup:
             hotel = table.select_one('a > div > div > div.p-searchResultItem__summaryInner > div.p-searchResultItem__summaryLeft > h2').text
             room_price = table.select_one('a > div > div > div.p-searchResultItem__summaryInner > div.p-searchResultItem__summaryRight > dl > dd > span.p-searchResultItem__lowestPriceValue').text
-            per_price = table.select_one('a > div > div > div.p-searchResultItem__summaryInner > div.p-searchResultItem__summaryRight > dl > dd > span.p-searchResultItem__lowestUnitPrice').text
+            # per_price = table.select_one('a > div > div > div.p-searchResultItem__summaryInner > div.p-searchResultItem__summaryRight > dl > dd > span.p-searchResultItem__lowestUnitPrice').text
+            per_price_tag = table.select_one('a > div > div > div.p-searchResultItem__summaryInner > div.p-searchResultItem__summaryRight > dl > dd > span.p-searchResultItem__lowestUnitPrice')
+            if per_price_tag is None:
+                per_price = None
+
+            else:
+                per_price = per_price_tag.text
+            
             page_urls = table.select('a.jlnpc-yadoCassette__link')
 
             for i, page_url in enumerate(page_urls):  

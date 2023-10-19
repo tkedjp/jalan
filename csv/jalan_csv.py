@@ -74,9 +74,7 @@ for i in range(max_page_index):
                 page_urls = None
 
             else:
-
-                print(page_url)       
-
+                # print(page_url)       
                 sleep(3)
 
                 hotel_page_r = requests.get(page_url, timeout=7.5, headers=header)

@@ -51,20 +51,14 @@ for i in range(max_page_index):
     if page_r.status_code >= 400:
         print(F'{url}は無効です')
         continue
-    # print(page_r)
 
     page_soup = BeautifulSoup(page_r.content, 'lxml')
-    # print(page_soup)
 
 #     #最安料金と1人あたりの料金
     table_soup = page_soup.select('div.p-yadoCassette__body.p-searchResultItem__body')
-    # print(table_soup)
     for table in table_soup:
         hotel = table.select_one('a > div > div > div.p-searchResultItem__summaryInner > div.p-searchResultItem__summaryLeft > h2').text
-        # print(hotel)
         room_price = table.select_one('a > div > div > div.p-searchResultItem__summaryInner > div.p-searchResultItem__summaryRight > dl > dd > span.p-searchResultItem__lowestPriceValue').text
-        # print(room_price)
-        # per_price = table.select_one('a > div > div > div.p-searchResultItem__summaryInner > div.p-searchResultItem__summaryRight > dl > dd > span.p-searchResultItem__lowestUnitPrice').text
         per_price_tag = table.select_one('a > div > div > div.p-searchResultItem__summaryInner > div.p-searchResultItem__summaryRight > dl > dd > span.p-searchResultItem__lowestUnitPrice')
         if per_price_tag is None:
             per_price = None
@@ -72,12 +66,7 @@ for i in range(max_page_index):
         else:
             per_price = per_price_tag.text
 
-        # print(per_price)
-
         page_urls = table.select('a.jlnpc-yadoCassette__link')
-        # print(page_urls)
-
-
  
         for i, page_url in enumerate(page_urls):
             page_url = 'https://www.jalan.net' + page_url.get('href')
@@ -97,7 +86,6 @@ for i in range(max_page_index):
             
                 #ホテル名
                 hotel_page_soup = BeautifulSoup(hotel_page_r.content, 'lxml')
-                # hotel_name = hotel_page_soup.select_one('#pankuzu > h1').text
 
                 #住所
                 address_tags = hotel_page_soup.select_one('#jlnpc-main-contets-area > div.shisetsu-accesspartking_body_wrap > table tr:nth-child(1) > td')

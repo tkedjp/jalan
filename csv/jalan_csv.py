@@ -13,7 +13,11 @@ month = input('チェックインする月を入力してください：')
 month = month.zfill(2)
 day = input('チェックインする日を入力してください：')
 day = day.zfill(2)
-stay_count = input('泊数を入力してください：')
+stay_count = int(input('泊数を入力してください：'))
+if stay_count <= 9:
+    stay_count = str(stay_count)
+else:
+    stay_count = input('泊数は1から9の間で入力してください：')
 room_count = input('室数を入力してください：')
 adult_num = input('人数を入力してください：')
 
@@ -28,14 +32,10 @@ sleep(3)
 r = requests.get(base_url, timeout=7.5, headers=header)
 if r.status_code >= 400:
     print(F'{base_url}は無効です')
-
 soup = BeautifulSoup(r.content, 'lxml')
 
 #詳細ページ数と一覧ページ数取得
 number = soup.select_one('span.jlnpc-listInformation--count').text
-print(number)
-
-# number = soup.select_one('td.jlnpc-planListCnt-header > span.s16_F60b').text
 max_page_index = int(number) // 30 + 1
 print(max_page_index)
 max_page_index = math.floor(max_page_index)
@@ -73,8 +73,7 @@ for i in range(max_page_index):
             if 'javascript' in page_url:
                 page_urls = None
 
-            else:
-                # print(page_url)       
+            else:   
                 sleep(3)
 
                 hotel_page_r = requests.get(page_url, timeout=7.5, headers=header)

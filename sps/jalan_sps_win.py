@@ -37,9 +37,9 @@ soup = BeautifulSoup(r.content, 'html5lib')
 
 #詳細ページ数と一覧ページ数取得
 number = soup.select_one('span.jlnpc-listInformation--count').text
-max_page_index = int(number) // 30 + 1
+max_page_index = int(number) / 30
+max_page_index = round(max_page_index)
 max_page_index = math.floor(max_page_index)
-# print(max_page_index)
 
 for i in range(max_page_index):
     url = base_url.format(30*i)

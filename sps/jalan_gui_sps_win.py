@@ -85,7 +85,8 @@ def save():
     soup = BeautifulSoup(r.content, 'html5lib')
 
     total_number = soup.select_one('td.jlnpc-planListCnt-header > span.s16_F60b').text
-    max_page_index = int(total_number) // 30 + 1
+    max_page_index = int(total_number) / 30
+    max_page_index = round(max_page_index)
     max_page_index = math.floor(max_page_index)
 
     for i in range(max_page_index):

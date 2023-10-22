@@ -8,8 +8,8 @@ import math
 
 hotel_list = []
 
-year = input('チェックインする年を入力してください(入力できるのは1年後までです)：')
-month = input('チェックインする月を入力してくださいい(入力できるのは1年後までです)：')
+year = input('チェックインする年を入力してください(入力できるのは1年後まで)：')
+month = input('チェックインする月を入力してくださいい(入力できるのは1年後まで)：')
 month = month.zfill(2)
 day = input('チェックインする日を入力してください：')
 day = day.zfill(2)
@@ -36,10 +36,9 @@ soup = BeautifulSoup(r.content, 'lxml')
 
 #詳細ページ数と一覧ページ数取得
 number = soup.select_one('span.jlnpc-listInformation--count').text
-max_page_index = int(number) // 30 + 1
-print(max_page_index)
+max_page_index = int(number) / 30
+max_page_index = round(max_page_index)
 max_page_index = math.floor(max_page_index)
-print(max_page_index)
 
 for i in range(max_page_index):
     url = base_url.format(30*i)
@@ -54,7 +53,7 @@ for i in range(max_page_index):
 
     page_soup = BeautifulSoup(page_r.content, 'lxml')
 
-#     #最安料金と1人あたりの料金
+    #最安料金と1人あたりの料金
     table_soup = page_soup.select('div.p-yadoCassette__body.p-searchResultItem__body')
     for table in table_soup:
         hotel = table.select_one('a > div > div > div.p-searchResultItem__summaryInner > div.p-searchResultItem__summaryLeft > h2').text

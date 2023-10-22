@@ -37,7 +37,7 @@ date_box.grid(row=1, column=2, padx=5, pady=5)
 #泊数
 stay_count_label = tkinter.Label(text='泊数：')
 stay_count_label.grid(row=2, column=1, padx=5, pady=5)
-stay_count_box = ttk.Combobox(values=[i+1 for i in range(10)])
+stay_count_box = ttk.Combobox(values=[i+1 for i in range(9)])
 stay_count_box.grid(row=2, column=2, padx=5, pady=5)
 
 #室数
@@ -85,7 +85,7 @@ def save():
     soup = BeautifulSoup(r.content, 'html5lib')
 
     total_number = soup.select_one('td.jlnpc-planListCnt-header > span.s16_F60b').text
-    max_page_index = int(total_number) // 59.5 + 1
+    max_page_index = int(total_number) // 30 + 1
     max_page_index = math.floor(max_page_index)
 
     for i in range(max_page_index):
@@ -106,86 +106,95 @@ def save():
         for table in table_soup:
             hotel = table.select_one('a > div > div > div.p-searchResultItem__summaryInner > div.p-searchResultItem__summaryLeft > h2').text
             room_price = table.select_one('a > div > div > div.p-searchResultItem__summaryInner > div.p-searchResultItem__summaryRight > dl > dd > span.p-searchResultItem__lowestPriceValue').text
-            per_price = table.select_one('a > div > div > div.p-searchResultItem__summaryInner > div.p-searchResultItem__summaryRight > dl > dd > span.p-searchResultItem__lowestUnitPrice').text
+            per_price_tag = table.select_one('a > div > div > div.p-searchResultItem__summaryInner > div.p-searchResultItem__summaryRight > dl > dd > span.p-searchResultItem__lowestUnitPrice')
+            if per_price_tag is None:
+                per_price = None
+
+            else:
+                per_price = per_price_tag.text
+
             page_urls = table.select('a.jlnpc-yadoCassette__link')
 
             for i, page_url in enumerate(page_urls):  
                 page_url = 'https://www.jalan.net' + page_url.get('href')
-
-                sleep(3)
-
-                hotel_page_r = requests.get(page_url, timeout=7.5)
-                if hotel_page_r.status_code >= 400:
-                    print(F'{page_url}は無効です')
-                    continue
-            
-                #ホテル名
-                hotel_page_soup = BeautifulSoup(hotel_page_r.content, 'html5lib')
-     
-                #住所
-                address_tags = hotel_page_soup.select_one('#jlnpc-main-contets-area > div.shisetsu-accesspartking_body_wrap > table tr:nth-child(1) > td')
-                if address_tags is None:
-                    address = None
+                if 'javascript' in page_url:
+                    page_urls = None
 
                 else:
-                    address = address_tags.text
-                    address = address.replace('大きな地図をみる', '')
-                    address = address.strip()
-            
-                #駐車場
-                parking_tags = hotel_page_soup.select_one('#jlnpc-main-contets-area > div.shisetsu-accesspartking_body_wrap > table tr:nth-child(3) > td')  
-                if parking_tags is None:
-                    parking = None
+                    sleep(3)
+
+                    hotel_page_r = requests.get(page_url, timeout=7.5)
+                    if hotel_page_r.status_code >= 400:
+                        print(F'{page_url}は無効です')
+                        continue
                 
-                else:
-                    parking = parking_tags.text
-                    parking = parking.replace('\n','')
-                    parking = parking.strip()
+                    #ホテル名
+                    hotel_page_soup = BeautifulSoup(hotel_page_r.content, 'html5lib')
+        
+                    #住所
+                    address_tags = hotel_page_soup.select_one('#jlnpc-main-contets-area > div.shisetsu-accesspartking_body_wrap > table tr:nth-child(1) > td')
+                    if address_tags is None:
+                        address = None
 
-                #タイプ別の室数
-                room_tag = hotel_page_soup.select_one('.shisetsu-roomsetsubi_body')
-                tags = room_tag.text
+                    else:
+                        address = address_tags.text
+                        address = address.replace('大きな地図をみる', '')
+                        address = address.strip()
+                
+                    #駐車場
+                    parking_tags = hotel_page_soup.select_one('#jlnpc-main-contets-area > div.shisetsu-accesspartking_body_wrap > table tr:nth-child(3) > td')  
+                    if parking_tags is None:
+                        parking = None
+                    
+                    else:
+                        parking = parking_tags.text
+                        parking = parking.replace('\n','')
+                        parking = parking.strip()
 
-                if '総部屋数' not in tags:
-                    single = room_tag.select_one('tr:nth-child(2) > td > div > table tr:nth-child(2) > td:first-child').text
-                    double = room_tag.select_one('tr:nth-child(2) > td > div > table tr:nth-child(2) > td:nth-child(2)').text
-                    twin = room_tag.select_one('tr:nth-child(2) > td > div > table tr:nth-child(2) > td:nth-child(3)').text
-                    sweet = room_tag.select_one('tr:nth-child(2) > td > div > table tr:nth-child(2) > td:last-child').text
-                    total = None
+                    #タイプ別の室数
+                    room_tag = hotel_page_soup.select_one('.shisetsu-roomsetsubi_body')
+                    tags = room_tag.text
 
-                elif 'シングル' not in tags:
-                    single = None
-                    double = None
-                    twin = None
-                    sweet = None
-                    total = room_tag.select_one('tr:nth-child(1) > td > div > table tr:nth-child(2) > td:nth-child(5)').text
-                    total = total.strip()
+                    if '総部屋数' not in tags:
+                        single = room_tag.select_one('tr:nth-child(2) > td > div > table tr:nth-child(2) > td:first-child').text
+                        double = room_tag.select_one('tr:nth-child(2) > td > div > table tr:nth-child(2) > td:nth-child(2)').text
+                        twin = room_tag.select_one('tr:nth-child(2) > td > div > table tr:nth-child(2) > td:nth-child(3)').text
+                        sweet = room_tag.select_one('tr:nth-child(2) > td > div > table tr:nth-child(2) > td:last-child').text
+                        total = None
 
-                else:
-                    single = room_tag.select_one('tr:nth-child(3) > td > div > table tr:nth-child(2) > td:first-child').text
-                    double = room_tag.select_one('tr:nth-child(3) > td > div > table tr:nth-child(2) > td:nth-child(2)').text
-                    twin = room_tag.select_one('tr:nth-child(3) > td > div > table tr:nth-child(2) > td:nth-child(3)').text
-                    sweet = room_tag.select_one('tr:nth-child(3) > td > div > table tr:nth-child(2) > td:last-child').text
-                    total = room_tag.select_one('tr:nth-child(1) > td > div > table tr:nth-child(2) > td:nth-child(5)').text
-                    total = total.strip()
+                    elif 'シングル' not in tags:
+                        single = None
+                        double = None
+                        twin = None
+                        sweet = None
+                        total = room_tag.select_one('tr:nth-child(1) > td > div > table tr:nth-child(2) > td:nth-child(5)').text
+                        total = total.strip()
 
-                hotel_list.append({
-                    'ホテル名': hotel,
-                    '詳細ページ': page_url,
-                    '住所': address,
-                    'シングル': single,
-                    'ダブル': double,
-                    'ツイン': twin,
-                    'スイート': sweet,
-                    '総部屋数': total,
-                    '室料': room_price,
-                    '1人あたり': per_price,
-                    '駐車場': parking
-                })
-                # print(hotel_list[-1])
-            processed += 1
-            progress_label.config(text=f'残りは{processed}/{total_number}です')
-            progress_label.update()
+                    else:
+                        single = room_tag.select_one('tr:nth-child(3) > td > div > table tr:nth-child(2) > td:first-child').text
+                        double = room_tag.select_one('tr:nth-child(3) > td > div > table tr:nth-child(2) > td:nth-child(2)').text
+                        twin = room_tag.select_one('tr:nth-child(3) > td > div > table tr:nth-child(2) > td:nth-child(3)').text
+                        sweet = room_tag.select_one('tr:nth-child(3) > td > div > table tr:nth-child(2) > td:last-child').text
+                        total = room_tag.select_one('tr:nth-child(1) > td > div > table tr:nth-child(2) > td:nth-child(5)').text
+                        total = total.strip()
+
+                    hotel_list.append({
+                        'ホテル名': hotel,
+                        '詳細ページ': page_url,
+                        '住所': address,
+                        'シングル': single,
+                        'ダブル': double,
+                        'ツイン': twin,
+                        'スイート': sweet,
+                        '総部屋数': total,
+                        '室料': room_price,
+                        '1人あたり': per_price,
+                        '駐車場': parking
+                    })
+                    # print(hotel_list[-1])
+                processed += 1
+                progress_label.config(text=f'残りは{processed}/{total_number}です')
+                progress_label.update()
 
     # #csv出力
     # df = pd.DataFrame(hotel_list)

@@ -9,6 +9,10 @@ import math
 hotel_list = []
 
 year = input('チェックインする年を入力してください(入力できるのは1年後まで)：')
+if(year == 2023 or year == 2024):
+    year = str(year)
+else:
+    year = input('チェックインする年を正しく入力してください(入力できるのは1年後まで)：')
 month = input('チェックインする月を入力してくださいい(入力できるのは1年後まで)：')
 month = month.zfill(2)
 day = input('チェックインする日を入力してください：')

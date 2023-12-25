@@ -40,7 +40,7 @@ if r.status_code >= 400:
 soup = BeautifulSoup(r.content, 'lxml')
 
 #詳細ページ数と一覧ページ数取得
-number = soup.select_one('span.jlnpc-listInformation--count').text
+number = soup.select_one('div.jlnpc-planListCnt-header > span.jlnpc-listInformation--count').text
 max_page_index = int(number) / 30
 max_page_index = round(max_page_index)
 max_page_index = math.floor(max_page_index)

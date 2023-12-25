@@ -71,7 +71,7 @@ def save():
 
     soup = BeautifulSoup(r.content, 'lxml')
 
-    total_number = soup.select_one('span.jlnpc-listInformation--count').text
+    total_number = soup.select_one('div.jlnpc-planListCnt-header > span.jlnpc-listInformation--count').text
     max_page_index = int(total_number) / 30
     max_page_index = round(max_page_index)
     max_page_index = math.floor(max_page_index)

@@ -65,6 +65,7 @@ def save():
     processed = 0
     # max_page_index = 0
     date_box_value = date_box.get()
+    year = date_box_value[0:4]
     month = date_box_value[5:7]
     day = date_box_value[8:10]
     stay_count = stay_count_box.get()
@@ -74,7 +75,7 @@ def save():
     print(sps_key)
 
     hotel_list = []
-    base_url = 'https://www.jalan.net/040000/LRG_040200/SML_040202/?screenId=UWW1402&distCd=01&listId=0&activeSort=0&mvTabFlg=1&stayYear=2023&stayMonth=' + month + '&stayDay=' + day + '&stayCount=' + stay_count + '&roomCount=' + room_count +'&adultNum=' + adult_num +'&yadHb=1&roomCrack=200000&kenCd=040000&lrgCd=040200&smlCd=040202&vosFlg=6&idx={}'
+    base_url = 'https://www.jalan.net/040000/LRG_040200/SML_040202/?screenId=UWW1402&distCd=01&listId=0&activeSort=0&mvTabFlg=1&stayYear=' + year + '&stayMonth=' + month + '&stayDay=' + day + '&stayCount=' + stay_count + '&roomCount=' + room_count +'&adultNum=' + adult_num +'&yadHb=1&roomCrack=200000&kenCd=040000&lrgCd=040200&smlCd=040202&vosFlg=6&idx={}'
 
     sleep(3)
 
@@ -84,7 +85,8 @@ def save():
 
     soup = BeautifulSoup(r.content, 'html5lib')
 
-    total_number = soup.select_one('td.jlnpc-planListCnt-header > span.s16_F60b').text
+    total_number_tag = soup.select_one('div.jlnpc-planListCnt-header > span.jlnpc-listInformation--count')
+    total_number = total_number_tag.text
     max_page_index = int(total_number) / 30
     max_page_index = round(max_page_index)
     max_page_index = math.floor(max_page_index)
@@ -193,9 +195,9 @@ def save():
                         '駐車場': parking
                     })
                     # print(hotel_list[-1])
-                processed += 1
-                progress_label.config(text=f'残りは{processed}/{total_number}です')
-                progress_label.update()
+                    processed += 1
+                    progress_label.config(text=f'残りは{processed}/{total_number}です')
+                    progress_label.update()
 
     # #csv出力
     # df = pd.DataFrame(hotel_list)

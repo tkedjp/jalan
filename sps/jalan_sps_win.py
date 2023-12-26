@@ -9,10 +9,10 @@ import math
 hotel_list = []
 
 year = input('チェックインする年を入力してください(入力できるのは1年後までです)：')
-if(year == 2023 or year == 2024):
-    year = str(year)
-else:
-    year = input('チェックインする年を正しく入力してください(入力できるのは1年後まで)：')
+# if(year == 2023 or year == 2024):
+#     year = str(year)
+# else:
+#     year = input('チェックインする年を正しく入力してください(入力できるのは1年後まで)：')
 month = input('チェックインする月を入力してくださいい(入力できるのは1年後までです)：')
 month = month.zfill(2)
 day = input('チェックインする日を入力してください：')
@@ -25,7 +25,7 @@ else:
 room_count = input('室数を入力してください：')
 adult_num = input('人数を入力してください：')
 
-base_url = 'https://www.jalan.net/040000/LRG_040200/SML_040202/?screenId=UWW1402&distCd=01&listId=0&activeSort=0&mvTabFlg=1&stayYear=2023&stayMonth=' + month + '&stayDay=' + day + '&stayCount=' + stay_count + '&roomCount=' + room_count +'&adultNum=' + adult_num +'&yadHb=1&roomCrack=200000&kenCd=040000&lrgCd=040200&smlCd=040202&vosFlg=6&idx={}'
+base_url = 'https://www.jalan.net/040000/LRG_040200/SML_040202/?screenId=UWW1402&distCd=01&listId=0&activeSort=0&mvTabFlg=1&stayYear=' + year + '&stayMonth=' + month + '&stayDay=' + day + '&stayCount=' + stay_count + '&roomCount=' + room_count +'&adultNum=' + adult_num +'&yadHb=1&roomCrack=200000&kenCd=040000&lrgCd=040200&smlCd=040202&vosFlg=6&idx={}'
 
 user_agent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36'
 header = {
@@ -34,13 +34,16 @@ header = {
 
 sleep(3)
 
+processed = 0
+
 r = requests.get(base_url, timeout=7.5, headers=header)
 if r.status_code >= 400:
     print(F'{base_url}は無効です')
 soup = BeautifulSoup(r.content, 'html5lib')
 
 #詳細ページ数と一覧ページ数取得
-number = soup.select_one('span.jlnpc-listInformation--count').text
+number_tag = soup.select_one('div.jlnpc-planListCnt-header > span.jlnpc-listInformation--count')
+number = number_tag.text
 max_page_index = int(number) / 30
 max_page_index = round(max_page_index)
 max_page_index = math.floor(max_page_index)
@@ -158,6 +161,8 @@ for i in range(max_page_index):
                     '駐車場': parking
                 })
                 print(hotel_list[-1])
+                processed += 1
+                print(f'残りは{processed}/{number}です')            
 
 #スプレッドシート出力
 import gspread

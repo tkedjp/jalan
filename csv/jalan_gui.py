@@ -186,10 +186,10 @@ def save():
                         '1人あたり': per_price,
                         '駐車場': parking
                     })
-                    # print(hotel_list[-1])
-                processed += 1
-                progress_label.config(text=f'残りは{processed}/{total_number}です')
-                progress_label.update()
+                    print(hotel_list[-1])
+                    processed += 1
+                    progress_label.config(text=f'残りは{processed}/{total_number}です')
+                    progress_label.update()
 
     #csv出力
     df = pd.DataFrame(hotel_list)

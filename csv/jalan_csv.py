@@ -34,6 +34,8 @@ header = {
 
 sleep(3)
 
+processed = 0
+
 r = requests.get(base_url, timeout=7.5, headers=header)
 if r.status_code >= 400:
     print(F'{base_url}は無効です')
@@ -41,9 +43,13 @@ soup = BeautifulSoup(r.content, 'lxml')
 
 #詳細ページ数と一覧ページ数取得
 number = soup.select_one('div.jlnpc-planListCnt-header > span.jlnpc-listInformation--count').text
+print(number)
 max_page_index = int(number) / 30
+print(max_page_index)
 max_page_index = round(max_page_index)
+print(max_page_index)
 max_page_index = math.floor(max_page_index)
+print(max_page_index)
 
 for i in range(max_page_index):
     url = base_url.format(30*i)
@@ -157,6 +163,9 @@ for i in range(max_page_index):
                     '駐車場': parking
                 })
                 print(hotel_list[-1])
+
+                processed += 1
+                print(f'残りは{processed}/{number}です')
 
 #csv出力
 df = pd.DataFrame(hotel_list)
